@@ -19,6 +19,7 @@ Quang Nguyen 90863
 ### Chat-URLs, z.B. ChatGPT
 
 [https://chatgpt.com](https://chatgpt.com)
+<https://claude.ai>
 
 ## Voraussetzungen
 
