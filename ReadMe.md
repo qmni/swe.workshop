@@ -21,6 +21,29 @@ https://chatgpt.com
 
 ## Frameworks und Bibliotheken
 
+## Projektstruktur
+
+Die aktive Go-Anwendung liegt in diesen Ordnern:
+
+* `cmd/server`: Einstiegspunkt der API
+* `internal/app`: Fiber-Server und Routing
+* `internal/httpapi`: HTTP-Handler und Request-Tests
+* `internal/database`: DB-Konfiguration, Verbindung und Migrationen
+* `internal/model`: Datenmodelle
+* `integration`: End-to-End-Test gegen die Testdatenbank
+* `scripts`: Hilfsskripte fuer lokale Checks, Demo-Requests und Keycloak-Token
+
+Ergaenzende bzw. uebernommene Artefakte liegen getrennt davon:
+
+* `src`: Konfigurations- und Ressourcenstruktur des Teampartner-Projekts als fachliche Referenz
+* `prisma`: Prisma-Schema als Referenz fuer die Datenbankstruktur
+* `extras/compose`: Zusaetzliche Compose-Stacks fuer Infrastruktur wie Keycloak, Postgres, Monitoring und SonarQube
+* `extras/doc`: Architektur- und Projektdokumentation
+* `bruno`: API-Requests fuer manuelle Tests mit Bruno
+* `requests.http`: Alternative HTTP-Beispielrequests fuer IDEs
+
+Build-Artefakte werden nicht versioniert. Das lokale Verzeichnis `bin/` ist nur fuer erzeugte Binaries aus `make build` gedacht.
+
 ### REST-Schnittstelle (Lesen und Neuanlegen)
 
 Go mit Fiber (`github.com/gofiber/fiber/v2`)
