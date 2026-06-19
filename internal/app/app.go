@@ -13,14 +13,14 @@ func New(db *gorm.DB) *fiber.App {
 	})
 
 	validator := validator.New()
-	handler := httpapi.NewProductHandler(db, validator)
+	handler := httpapi.NewPlayerHandler(db, validator)
 
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
-	app.Get("/products", handler.List)
-	app.Get("/products/:id", handler.Get)
-	app.Post("/products", handler.Create)
+	app.Get("/players", handler.List)
+	app.Get("/players/:id", handler.Get)
+	app.Post("/players", handler.Create)
 
 	return app
 }
