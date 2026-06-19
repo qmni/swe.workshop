@@ -64,6 +64,8 @@ GORM:
 
 Die Tabelle `products` wird beim Start per `AutoMigrate` angelegt.
 
+Die Datenbankverbindung ist ueber Umgebungsvariablen konfigurierbar, damit auch der DB-Server des Teampartners verwendet werden kann. Beispielwerte stehen in `.env.example`.
+
 ### Optional: OIDC mit Keycloak
 
 Nicht implementiert. Keycloak war laut Aufgabenstellung optional.
