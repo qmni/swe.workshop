@@ -21,6 +21,30 @@ OpenAI Codex
 
 ## Frameworks und Bibliotheken
 
+Backend und API:
+
+* Go 1.22
+* Fiber (`github.com/gofiber/fiber/v2`) als Web-Framework
+* Validator (`github.com/go-playground/validator/v10`) fuer Request-Validierung
+
+Datenbank und Persistenz:
+
+* PostgreSQL
+* GORM (`gorm.io/gorm`) als ORM
+* PostgreSQL-Treiber fuer GORM (`gorm.io/driver/postgres`)
+
+Authentifizierung (optional):
+
+* Keycloak als OIDC-Provider
+* JWT-Pruefung mit `github.com/golang-jwt/jwt/v5`
+* JWKS-Abruf mit `github.com/MicahParks/keyfunc/v3`
+
+Tests und Entwicklungswerkzeuge:
+
+* Go Testing (`go test`) fuer Unit- und Integrationstests
+* Docker / Docker Compose fuer lokale Laufzeit und Testumgebung
+* Bruno und `requests.http` fuer manuelle API-Tests
+
 ## Projektstruktur
 
 Die aktive Go-Anwendung liegt in diesen Ordnern:
