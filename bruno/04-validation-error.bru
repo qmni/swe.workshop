@@ -5,9 +5,9 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/players
+  url: {{baseUrl}}/players
   body: json
-  auth: none
+  auth: bearer
 }
 
 headers {
@@ -20,4 +20,8 @@ body:json {
     "email": "not-an-email",
     "playerClass": "PALADIN"
   }
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }

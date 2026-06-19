@@ -5,9 +5,9 @@ meta {
 }
 
 put {
-  url: http://localhost:8080/players/{{playerId}}
+  url: {{baseUrl}}/players/{{playerId}}
   body: json
-  auth: none
+  auth: bearer
 }
 
 headers {
@@ -23,4 +23,8 @@ body:json {
     "playerClass": "ROGUE",
     "status": "ACTIVE"
   }
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }

@@ -1,0 +1,24 @@
+meta {
+  name: Keycloak Token holen
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{keycloakUrl}}/realms/swe-workshop/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  grant_type: password
+  client_id: swe-workshop-client
+  username: user
+  password: p
+}
+
+script:post-response {
+  const body = typeof res.body === 'string' ? JSON.parse(res.body) : res.body;
+  bru.setEnvVar('accessToken', body.access_token);
+  console.log('Token gesetzt:', body.access_token ? 'OK' : 'FEHLER');
+}
