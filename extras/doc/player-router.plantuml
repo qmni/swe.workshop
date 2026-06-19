@@ -1,0 +1,68 @@
+' Copyright (C) 2026 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Player-Router
+
+interface Promise<T>
+
+package hono.context {
+  class Context<E, P, I>
+  interface JSONRespondReturn<T, U> <<type>>
+
+  Context .down[hidden].> JSONRespondReturn
+}
+
+package generated.prisma {
+  class Prisma
+  note left: + bedeutet innere Klasse
+
+  class PlayerGetPayload<T>
+  Prisma +-- PlayerGetPayload
+}
+
+package player {
+  package service {
+    class PlayerService << control >>
+  }
+
+  package router #DDDDDD {
+    object "get('/:id', async handler): JSONRespondReturn" as getById <<function>>
+    object "get('/', async handler): JSONRespondReturn" as get <<function>>
+
+    getById .down[hidden].> get
+    get .down[hidden].> PlayerService
+    get .down[hidden].> Prisma
+
+    getById .up.> Promise
+    getById .right.> Context
+    getById .right.> JSONRespondReturn
+    getById .right.> PlayerService
+    getById .down.> PlayerGetPayload
+
+    get .up.> Promise
+    get .right.> Context
+    get .right.> JSONRespondReturn
+    get .right.> PlayerService
+    get .down.> PlayerGetPayload
+  }
+}
+
+hide empty members
+
+footer (c) Juergen Zimmermann
+
+@enduml

@@ -1,0 +1,52 @@
+ generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PlayerStatus {
+  ACTIVE
+  BANNED
+  DELETED
+}
+
+enum PlayerClass {
+  WARRIOR
+  MAGE
+  ROGUE
+  PRIEST
+  HUNTER
+}
+
+model Player {
+  id          Int          @id @default(autoincrement())
+  username    String       @unique
+  email       String       @unique
+  level       Int          @default(1)
+  experience  Int          @default(0)
+  playerClass PlayerClass
+  status      PlayerStatus @default(ACTIVE)
+  guildId     Int?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  version     Int          @default(0)
+  guild       Guild?       @relation(fields: [guildId], references: [id], onDelete: SetNull)
+
+  @@index([guildId])
+  @@map("player")
+}
+
+model Guild {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  foundedAt   DateTime @default(now())
+  version     Int      @default(0)
+  players     Player[]
+
+  @@map("guild")
+}
