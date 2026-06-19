@@ -125,6 +125,8 @@ Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt au
 4. Playerliste lesen: `GET /players`
 5. Validierung testen, indem ein Player ohne Username, mit falscher E-Mail oder ungueltiger `playerClass` gesendet wird
 
+Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanlegen und Validierungsfehler waren erfolgreich. Der Integrationstest mit Docker wurde ebenfalls erfolgreich ausgefuehrt.
+
 ## Prompts/Requests an KI-Agent/en
 
 Initialer Request:
