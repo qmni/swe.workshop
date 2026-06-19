@@ -7,7 +7,7 @@ Quang Nguyen 90863
 
 ## Link zum Git-Repository
 
-https://github.com/qmni/swe.workshop
+[https://github.com/qmni/swe.workshop](https://github.com/qmni/swe.workshop)
 
 ## KI-Werkzeuge
 
@@ -17,7 +17,7 @@ OpenAI Codex
 
 ### Chat-URLs, z.B. https://chatgpt.com
 
-https://chatgpt.com
+[https://chatgpt.com](https://chatgpt.com)
 
 ## Frameworks und Bibliotheken
 
@@ -44,7 +44,7 @@ Ergaenzende bzw. uebernommene Artefakte liegen getrennt davon:
 
 Build-Artefakte werden nicht versioniert. Das lokale Verzeichnis `bin/` ist nur fuer erzeugte Binaries aus `make build` gedacht.
 
-### REST-Schnittstelle (Lesen und Neuanlegen)
+### REST-Schnittstelle (CRUD)
 
 Go mit Fiber (`github.com/gofiber/fiber/v2`)
 
@@ -71,7 +71,9 @@ Beispiel zum Lesen:
 curl http://localhost:8080/players
 ```
 
-### Validierung (nur Neuanlegen)
+Die Antwort von `GET /players` ist aktuell eine JSON-Liste von Player-Objekten.
+
+### Validierung (Neuanlegen und Aktualisieren)
 
 `github.com/go-playground/validator/v10`
 
@@ -83,6 +85,18 @@ Validiert wird beim `POST /players`:
 * `experience`: optional, mindestens 0
 * `playerClass`: Pflichtfeld, einer von `WARRIOR`, `MAGE`, `ROGUE`, `PRIEST`, `HUNTER`
 * `guildId`: optional, positive ID
+
+Zusätzlich wird beim `PUT /players/:id` validiert:
+
+* `username`: Pflichtfeld, 3 bis 60 Zeichen
+* `email`: Pflichtfeld, gueltige E-Mail-Adresse, maximal 120 Zeichen
+* `level`: Pflichtfeld, 1 bis 100
+* `experience`: mindestens 0
+* `playerClass`: Pflichtfeld, einer von `WARRIOR`, `MAGE`, `ROGUE`, `PRIEST`, `HUNTER`
+* `status`: Pflichtfeld, einer von `ACTIVE`, `BANNED`, `DELETED`
+* `guildId`: optional, positive ID
+
+Bei doppeltem `username` oder `email` wird ein `409 Conflict` zurueckgegeben.
 
 ### OR-Mapping (für PostgreSQL)
 
@@ -208,7 +222,7 @@ Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanle
 
 Initialer Request:
 
-> swe workshop so heisst das projekt was ich jetzt machen muss ich hab 4h stunden zeit ... richte alles für mich ein und das ist der github https://github.com/qmni/swe.workshop
+> swe workshop so heisst das projekt was ich jetzt machen muss ich hab 4h stunden zeit ... richte alles für mich ein und das ist der github [https://github.com/qmni/swe.workshop](https://github.com/qmni/swe.workshop)
 
 Umgesetzte KI-Aufgaben:
 
