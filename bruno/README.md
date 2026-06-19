@@ -20,7 +20,10 @@ make run
 03-create-player
 02-list-players
 05-get-player-1
+06-update-player-1
+05-get-player-1
 04-validation-error
+07-delete-player-1
 ```
 
 Expected results:
@@ -29,4 +32,6 @@ Expected results:
 * `02-list-players`: HTTP 200 and a JSON list
 * `03-create-player`: HTTP 201 and a new player
 * `05-get-player-1`: HTTP 200 and player with ID 1
+* `06-update-player-1`: HTTP 200 and updated player data
 * `04-validation-error`: HTTP 400 and validation details
+* `07-delete-player-1`: HTTP 204

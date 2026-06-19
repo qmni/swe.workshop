@@ -1,0 +1,26 @@
+meta {
+  name: Update player 1
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8080/players/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "updated_bruno_player",
+    "email": "updated_bruno_player@example.com",
+    "level": 20,
+    "experience": 1000,
+    "playerClass": "ROGUE",
+    "status": "ACTIVE"
+  }
+}
