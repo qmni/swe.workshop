@@ -1,4 +1,4 @@
-.PHONY: test build run integration-test
+.PHONY: test build run integration-test keycloak-run keycloak-token
 
 test:
 	go test ./...
@@ -11,3 +11,9 @@ run:
 
 integration-test:
 	docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
+
+keycloak-run:
+	docker compose -f docker-compose.keycloak.yml up
+
+keycloak-token:
+	./scripts/keycloak-token.sh

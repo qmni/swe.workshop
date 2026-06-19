@@ -74,7 +74,55 @@ Die Datenbankverbindung ist ueber Umgebungsvariablen konfigurierbar, damit auch 
 
 ### Optional: OIDC mit Keycloak
 
-Nicht implementiert. Keycloak war laut Aufgabenstellung optional.
+Keycloak ist optional und wird in der Go-API nicht verpflichtend erzwungen. Die Infrastruktur ist vorbereitet:
+
+* `docker-compose.keycloak.yml`
+* `keycloak/swe-workshop-realm.json`
+* `scripts/keycloak-token.sh`
+
+Starten:
+
+```bash
+make keycloak-run
+```
+
+Admin-Konsole:
+
+```text
+http://localhost:8880
+```
+
+Admin-Login:
+
+```text
+Username: tmp
+Password: p
+```
+
+Importierter Realm:
+
+```text
+swe-workshop
+```
+
+Importierter Client:
+
+```text
+swe-workshop-client
+```
+
+Demo-User:
+
+```text
+user / p
+admin / p
+```
+
+Token abrufen:
+
+```bash
+make keycloak-token
+```
 
 ### Einfacher Integrationstest
 
