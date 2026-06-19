@@ -71,6 +71,43 @@ func TestPlayerAPI(t *testing.T) {
 	if len(players) != 1 || players[0]["username"] != "testplayer" {
 		t.Fatalf("unexpected players response: %#v", players)
 	}
+
+	updateBody := []byte(`{"username":"updatedplayer","email":"updated@example.com","level":20,"experience":1000,"playerClass":"ROGUE","status":"ACTIVE"}`)
+	updateReq, err := http.NewRequest(http.MethodPut, "http://localhost:18080/players/1", bytes.NewReader(updateBody))
+	if err != nil {
+		t.Fatalf("create update request: %v", err)
+	}
+	updateReq.Header.Set("Content-Type", "application/json")
+	updateResp, err := client.Do(updateReq)
+	if err != nil {
+		t.Fatalf("put player: %v", err)
+	}
+	defer updateResp.Body.Close()
+	if updateResp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 OK for update, got %d", updateResp.StatusCode)
+	}
+
+	deleteReq, err := http.NewRequest(http.MethodDelete, "http://localhost:18080/players/1", nil)
+	if err != nil {
+		t.Fatalf("create delete request: %v", err)
+	}
+	deleteResp, err := client.Do(deleteReq)
+	if err != nil {
+		t.Fatalf("delete player: %v", err)
+	}
+	defer deleteResp.Body.Close()
+	if deleteResp.StatusCode != http.StatusNoContent {
+		t.Fatalf("expected 204 No Content for delete, got %d", deleteResp.StatusCode)
+	}
+
+	getDeletedResp, err := client.Get("http://localhost:18080/players/1")
+	if err != nil {
+		t.Fatalf("get deleted player: %v", err)
+	}
+	defer getDeletedResp.Body.Close()
+	if getDeletedResp.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected 404 Not Found for deleted player, got %d", getDeletedResp.StatusCode)
+	}
 }
 
 func waitForHealth(t *testing.T, client http.Client) {
