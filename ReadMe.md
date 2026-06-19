@@ -103,6 +103,18 @@ make run
 make integration-test
 ```
 
+Lokale Pruefung ohne Docker:
+
+```bash
+./scripts/check-local.sh
+```
+
+Demo-Requests nach dem Start der Anwendung:
+
+```bash
+./scripts/demo-requests.sh
+```
+
 Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt aus einer IDE oder mit einem REST-Client getestet werden kann.
 
 ### Demo-Ablauf
