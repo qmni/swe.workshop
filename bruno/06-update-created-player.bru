@@ -1,7 +1,7 @@
 meta {
   name: Update created player
   type: http
-  seq: 6
+  seq: 8
 }
 
 put {
@@ -14,6 +14,10 @@ headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: {{accessToken}}
+}
+
 body:json {
   {
     "username": "updated_{{brunoUsername}}",
@@ -23,8 +27,4 @@ body:json {
     "playerClass": "ROGUE",
     "status": "ACTIVE"
   }
-}
-
-auth:bearer {
-  token: {{accessToken}}
 }

@@ -1,7 +1,7 @@
 meta {
   name: Validation error
   type: http
-  seq: 4
+  seq: 7
 }
 
 post {
@@ -14,14 +14,14 @@ headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: {{accessToken}}
+}
+
 body:json {
   {
     "username": "",
     "email": "not-an-email",
     "playerClass": "PALADIN"
   }
-}
-
-auth:bearer {
-  token: {{accessToken}}
 }

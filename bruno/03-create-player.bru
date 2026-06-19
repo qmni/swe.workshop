@@ -1,7 +1,7 @@
 meta {
   name: Create player
   type: http
-  seq: 3
+  seq: 5
 }
 
 post {
@@ -12,6 +12,10 @@ post {
 
 headers {
   Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }
 
 body:json {
@@ -33,8 +37,4 @@ script:pre-request {
 script:post-response {
   const body = typeof res.body === 'string' ? JSON.parse(res.body) : res.body;
   bru.setVar('playerId', body.id);
-}
-
-auth:bearer {
-  token: {{accessToken}}
 }
