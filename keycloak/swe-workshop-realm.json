@@ -1,0 +1,69 @@
+{
+  "realm": "swe-workshop",
+  "enabled": true,
+  "displayName": "SWE Workshop",
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Administrative workshop role"
+      },
+      {
+        "name": "user",
+        "description": "Default workshop user role"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "swe-workshop-client",
+      "name": "SWE Workshop Client",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@example.com",
+      "firstName": "Workshop",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "p",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin"
+      ]
+    },
+    {
+      "username": "user",
+      "enabled": true,
+      "email": "user@example.com",
+      "firstName": "Workshop",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "p",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
+    }
+  ]
+}
