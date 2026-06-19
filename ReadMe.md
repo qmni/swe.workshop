@@ -275,3 +275,14 @@ Fuer manuelle Tests mit Bruno liegt eine Collection im Ordner `bruno/`.
 Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanlegen und Validierungsfehler waren erfolgreich. Der Integrationstest mit Docker wurde ebenfalls erfolgreich ausgefuehrt.
 
 ## Prompts/Requests an KI-Agent/en
+
+* Check erst kurz das ganze Repo und sag was fuer Abgabe schon passt und was noch fehlt (nur die wichtigen Punkte, keine langen Texte)
+* Setz die Go-API lauffaehig auf mit `GET /health`, `GET /players`, `GET /players/:id`, `POST /players`, `PUT /players/:id`, `DELETE /players/:id`
+* Bau die Player-Validierung sauber ein: `username` Pflicht, `email` gueltig, `playerClass` nur erlaubte Werte, bei Fehler `400` mit klarer Message
+* Nutz PostgreSQL + GORM, Tabellen bei Start anlegen/migrieren, DB-Config ueber Env (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`)
+* Richte Docker + Docker Compose so ein, dass API und DB zusammen mit einem Befehl hochfahren und API auf `localhost:8080` erreichbar ist
+* Mach mindestens einen Integrationstest, der Create + List + Update + Delete einmal durchlaeuft und bei Duplicate auch `409` prueft
+* Wenn du Code aenderst: kurz sagen welche Dateien angepasst wurden und warum, damit wir schnell kontrollieren koennen
+* Nach jedem groesseren Schritt direkt testen (`go test` oder Compose-Testlauf) und Fehler sofort mit kleinem Folgeprompt fixen
+* README knapp und praktisch halten: Start, wichtigste Befehle, Testlauf, Demo-Ablauf, keine unnoetigen Ausschweifungen
+* Wenn mehrere Aufgaben offen sind: priorisieren nach "muss fuer Abgabe heute" und den Rest als optional markieren
