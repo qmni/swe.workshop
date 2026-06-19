@@ -19,6 +19,14 @@ OpenAI Codex
 
 [https://chatgpt.com](https://chatgpt.com)
 
+## Voraussetzungen
+
+Fuer den lokalen Start werden benoetigt:
+
+* Go 1.22 oder neuer
+* Docker und Docker Compose
+* Optional: `make` fuer die kuerzeren Hilfsbefehle
+
 ## Frameworks und Bibliotheken
 
 Backend und API:
