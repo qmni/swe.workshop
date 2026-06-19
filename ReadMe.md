@@ -154,7 +154,7 @@ Wichtige Umgebungsvariablen sind:
 
 ### Optional: OIDC mit Keycloak
 
-Keycloak ist optional und wird in der Go-API nicht verpflichtend erzwungen. Die Infrastruktur ist vorbereitet:
+Keycloak ist optional und wird in der Go-API nicht verpflichtend erzwungen. Wenn `KEYCLOAK_JWKS_URL` nicht gesetzt ist, laeuft die API ohne Token-Pruefung durch. Die Infrastruktur ist vorbereitet:
 
 * `docker-compose.keycloak.yml`
 * `keycloak/swe-workshop-realm.json`
