@@ -35,3 +35,5 @@ Expected results:
 * `06-update-player-1`: HTTP 200 and updated player data
 * `04-validation-error`: HTTP 400 and validation details
 * `07-delete-player-1`: HTTP 204
+
+If your created player has another ID, replace `/players/1` in requests 05, 06 and 07 with that ID.
