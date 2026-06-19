@@ -6,6 +6,7 @@ import (
 
 	"github.com/qmni/swe.workshop/internal/app"
 	"github.com/qmni/swe.workshop/internal/database"
+	"github.com/qmni/swe.workshop/internal/middleware"
 )
 
 func main() {
@@ -17,6 +18,10 @@ func main() {
 
 	if err := database.Migrate(db); err != nil {
 		log.Fatalf("migrate database: %v", err)
+	}
+
+	if err := middleware.InitKeycloak(); err != nil {
+		log.Fatalf("init keycloak: %v", err)
 	}
 
 	server := app.New(db)
