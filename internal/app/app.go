@@ -1,6 +1,9 @@
 package app
 
 import (
+	"errors"
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/qmni/swe.workshop/internal/httpapi"
@@ -8,9 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type errorEnvelope struct {
+	Error apiError `json:"error"`
+}
+
+type apiError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
 func New(db *gorm.DB) *fiber.App {
 	app := fiber.New(fiber.Config{
-		AppName: "swe-workshop",
+		AppName:      "swe-workshop",
+		ErrorHandler: jsonErrorHandler,
 	})
 
 	validator := validator.New()
@@ -28,4 +41,46 @@ func New(db *gorm.DB) *fiber.App {
 	players.Delete("/:id", handler.Delete)
 
 	return app
+}
+
+func jsonErrorHandler(c *fiber.Ctx, err error) error {
+	status := fiber.StatusInternalServerError
+	message := http.StatusText(status)
+
+	var fiberErr *fiber.Error
+	if errors.As(err, &fiberErr) {
+		status = fiberErr.Code
+		if fiberErr.Message != "" {
+			message = fiberErr.Message
+		} else {
+			message = http.StatusText(status)
+		}
+	}
+
+	return c.Status(status).JSON(errorEnvelope{
+		Error: apiError{
+			Code:    errorCodeForStatus(status),
+			Message: message,
+		},
+	})
+}
+
+func errorCodeForStatus(status int) string {
+	switch status {
+	case fiber.StatusBadRequest:
+		return "BAD_REQUEST"
+	case fiber.StatusUnauthorized:
+		return "UNAUTHORIZED"
+	case fiber.StatusForbidden:
+		return "FORBIDDEN"
+	case fiber.StatusNotFound:
+		return "NOT_FOUND"
+	case fiber.StatusConflict:
+		return "CONFLICT"
+	default:
+		if status >= 500 {
+			return "INTERNAL_ERROR"
+		}
+		return "HTTP_ERROR"
+	}
 }
