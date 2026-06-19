@@ -141,6 +141,17 @@ Die Tabellen `player` und `guild` sowie die PostgreSQL-Enums `PlayerClass` und `
 
 Die Datenbankverbindung ist ueber Umgebungsvariablen konfigurierbar, damit auch der DB-Server des Teampartners verwendet werden kann. Beispielwerte stehen in `.env.example`.
 
+Wichtige Umgebungsvariablen sind:
+
+* `DB_HOST`: Host der PostgreSQL-Datenbank
+* `DB_PORT`: Port der PostgreSQL-Datenbank
+* `DB_USER`: Datenbankbenutzer
+* `DB_PASSWORD`: Datenbankpasswort
+* `DB_NAME`: Datenbankname
+* `DB_SSLMODE`: SSL-Modus fuer die Verbindung
+* `PORT`: Port fuer die Go-API
+* `KEYCLOAK_JWKS_URL`: optionaler JWKS-Endpunkt fuer Keycloak
+
 ### Optional: OIDC mit Keycloak
 
 Keycloak ist optional und wird in der Go-API nicht verpflichtend erzwungen. Die Infrastruktur ist vorbereitet:
