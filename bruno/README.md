@@ -12,9 +12,22 @@ make run
 /Users/hien/Desktop/swe-workshop/bruno
 ```
 
-3. Run the requests in this order:
+3. Select the `local` environment (top right corner in Bruno).
+
+4. If Keycloak auth is enabled (`KEYCLOAK_JWKS_URL` set), run the token
+   request first. It stores the access token for all player requests:
 
 ```text
+00-keycloak-token
+```
+
+The token expires after a few minutes. Re-run `00-keycloak-token` when a
+request returns HTTP 401.
+
+5. Run the requests in this order:
+
+```text
+00-keycloak-token
 01-health
 02-list-players
 03-create-player
@@ -28,6 +41,7 @@ make run
 
 Expected results:
 
+* `00-keycloak-token`: HTTP 200 and an `access_token` stored as `accessToken`
 * `01-health`: HTTP 200 and `{"status":"ok"}`
 * `02-list-players`: HTTP 200 and a JSON list
 * `03-create-player`: HTTP 201, a new player and stored `playerId`
