@@ -16,7 +16,7 @@ Quang Nguyen 90863
 * Claude Code (Anthropic)
 * OpenAI Codex
 
-### Chat-URLs, z.B. https://chatgpt.com
+### Chat-URLs, z.B. ChatGPT
 
 [https://chatgpt.com](https://chatgpt.com)
 
@@ -275,17 +275,3 @@ Fuer manuelle Tests mit Bruno liegt eine Collection im Ordner `bruno/`.
 Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanlegen und Validierungsfehler waren erfolgreich. Der Integrationstest mit Docker wurde ebenfalls erfolgreich ausgefuehrt.
 
 ## Prompts/Requests an KI-Agent/en
-
-Initialer Request:
-
-> swe workshop so heisst das projekt was ich jetzt machen muss ich hab 4h stunden zeit ... richte alles für mich ein und das ist der github [https://github.com/qmni/swe.workshop](https://github.com/qmni/swe.workshop)
-
-Umgesetzte KI-Aufgaben:
-
-* Projektstruktur für Go erstellt
-* REST-API mit Lesen und Neuanlegen umgesetzt
-* Validierung für Neuanlegen ergänzt
-* PostgreSQL-Anbindung mit GORM umgesetzt
-* Docker-Compose für Anwendung und Datenbank erstellt
-* Einfachen Integrationstest vorbereitet
-* Diese `ReadMe.md` für die Abgabe ausgefüllt
