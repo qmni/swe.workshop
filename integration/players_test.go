@@ -55,6 +55,15 @@ func TestPlayerAPI(t *testing.T) {
 		t.Fatalf("expected 201 Created, got %d", createResp.StatusCode)
 	}
 
+	duplicateResp, err := client.Post("http://localhost:18080/players", "application/json", bytes.NewReader(createBody))
+	if err != nil {
+		t.Fatalf("post duplicate player: %v", err)
+	}
+	defer duplicateResp.Body.Close()
+	if duplicateResp.StatusCode != http.StatusConflict {
+		t.Fatalf("expected 409 Conflict for duplicate player, got %d", duplicateResp.StatusCode)
+	}
+
 	listResp, err := client.Get("http://localhost:18080/players")
 	if err != nil {
 		t.Fatalf("get players: %v", err)

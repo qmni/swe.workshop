@@ -5,8 +5,10 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/qmni/swe.workshop/internal/model"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type PlayerHandler struct {
@@ -79,8 +81,12 @@ func (h PlayerHandler) Create(c *fiber.Ctx) error {
 		Status:      model.PlayerStatusActive,
 		GuildID:     req.GuildID,
 	}
-	if err := h.db.Create(&player).Error; err != nil {
+	result := h.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&player)
+	if result.Error != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "player could not be created")
+	}
+	if result.RowsAffected == 0 {
+		return fiber.NewError(fiber.StatusConflict, "player username or email already exists")
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(player)
@@ -116,6 +122,9 @@ func (h PlayerHandler) Update(c *fiber.Ctx) error {
 	player.Version++
 
 	if err := h.db.Save(&player).Error; err != nil {
+		if isUniqueViolation(err) {
+			return fiber.NewError(fiber.StatusConflict, "player username or email already exists")
+		}
 		return fiber.NewError(fiber.StatusInternalServerError, "player could not be updated")
 	}
 
@@ -139,6 +148,11 @@ func defaultLevel(level int) int {
 		return 1
 	}
 	return level
+}
+
+func isUniqueViolation(err error) bool {
+	var pgErr *pgconn.PgError
+	return errors.As(err, &pgErr) && pgErr.Code == "23505"
 }
 
 func validationErrors(err error) []string {
