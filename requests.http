@@ -1,0 +1,25 @@
+### Health check
+GET http://localhost:8080/health
+
+### List products
+GET http://localhost:8080/products
+
+### Create valid product
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Notebook",
+  "description": "Workshop product",
+  "priceCents": 1299
+}
+
+### Create invalid product to demonstrate validation
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "description": "Invalid product",
+  "priceCents": 0
+}
