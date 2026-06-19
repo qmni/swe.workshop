@@ -2,13 +2,13 @@ services:
   test-db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: workshop
-      POSTGRES_PASSWORD: workshop
-      POSTGRES_DB: workshop
+      POSTGRES_USER: player
+      POSTGRES_PASSWORD: p
+      POSTGRES_DB: player
     ports:
       - "55432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U workshop -d workshop"]
+      test: ["CMD-SHELL", "pg_isready -U player -d player"]
       interval: 2s
       timeout: 3s
       retries: 20
@@ -23,9 +23,9 @@ services:
       RUN_INTEGRATION: 1
       DB_HOST: test-db
       DB_PORT: 5432
-      DB_USER: workshop
-      DB_PASSWORD: workshop
-      DB_NAME: workshop
+      DB_USER: player
+      DB_PASSWORD: p
+      DB_NAME: player
       DB_SSLMODE: disable
     command: go test ./...
     depends_on:
