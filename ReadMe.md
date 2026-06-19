@@ -28,33 +28,36 @@ Go mit Fiber (`github.com/gofiber/fiber/v2`)
 Implementierte Endpunkte:
 
 * `GET /health`
-* `GET /products`
-* `GET /products/:id`
-* `POST /products`
+* `GET /players`
+* `GET /players/:id`
+* `POST /players`
 
 Beispiel zum Neuanlegen:
 
 ```bash
-curl -X POST http://localhost:8080/products \
+curl -X POST http://localhost:8080/players \
   -H "Content-Type: application/json" \
-  -d '{"name":"Notebook","description":"Workshop product","priceCents":1299}'
+  -d '{"username":"testplayer","email":"testplayer@example.com","level":10,"experience":500,"playerClass":"MAGE"}'
 ```
 
 Beispiel zum Lesen:
 
 ```bash
-curl http://localhost:8080/products
+curl http://localhost:8080/players
 ```
 
 ### Validierung (nur Neuanlegen)
 
 `github.com/go-playground/validator/v10`
 
-Validiert wird beim `POST /products`:
+Validiert wird beim `POST /players`:
 
-* `name`: Pflichtfeld, 2 bis 120 Zeichen
-* `description`: maximal 500 Zeichen
-* `priceCents`: Pflichtfeld, mindestens 1, maximal 10000000
+* `username`: Pflichtfeld, 3 bis 60 Zeichen
+* `email`: Pflichtfeld, gueltige E-Mail-Adresse, maximal 120 Zeichen
+* `level`: optional, 1 bis 100
+* `experience`: optional, mindestens 0
+* `playerClass`: Pflichtfeld, einer von `WARRIOR`, `MAGE`, `ROGUE`, `PRIEST`, `HUNTER`
+* `guildId`: optional, positive ID
 
 ### OR-Mapping (für PostgreSQL)
 
@@ -63,7 +66,7 @@ GORM:
 * `gorm.io/gorm`
 * `gorm.io/driver/postgres`
 
-Die Tabelle `products` wird beim Start per `AutoMigrate` angelegt.
+Die Tabellen `player` und `guild` sowie die PostgreSQL-Enums `PlayerClass` und `PlayerStatus` werden beim Start angelegt, falls sie noch nicht existieren. Die Struktur orientiert sich an den Partner-Dateien `prisma/schema.prisma` und `src/config/resources/postgresql/create-table.sql`.
 
 Die Datenbankverbindung ist ueber Umgebungsvariablen konfigurierbar, damit auch der DB-Server des Teampartners verwendet werden kann. Beispielwerte stehen in `.env.example`.
 
@@ -73,9 +76,9 @@ Nicht implementiert. Keycloak war laut Aufgabenstellung optional.
 
 ### Einfacher Integrationstest
 
-Integrationstest in `integration/products_test.go`.
+Integrationstest in `integration/players_test.go`.
 
-Der Test startet die API gegen eine PostgreSQL-Testdatenbank, legt ein Produkt per REST an und liest die Produktliste wieder aus.
+Der Test startet die API gegen eine PostgreSQL-Testdatenbank, legt einen Player per REST an und liest die Playerliste wieder aus.
 
 Ausführen:
 
@@ -106,9 +109,9 @@ Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt au
 
 1. Anwendung starten: `docker compose up --build`
 2. Health-Check aufrufen: `GET /health`
-3. Produkt anlegen: `POST /products`
-4. Produktliste lesen: `GET /products`
-5. Validierung testen, indem ein Produkt ohne Namen oder mit `priceCents: 0` gesendet wird
+3. Player anlegen: `POST /players`
+4. Playerliste lesen: `GET /players`
+5. Validierung testen, indem ein Player ohne Username, mit falscher E-Mail oder ungueltiger `playerClass` gesendet wird
 
 ## Prompts/Requests an KI-Agent/en
 
