@@ -20,11 +20,11 @@ type Config struct {
 
 func ConfigFromEnv() Config {
 	return Config{
-		Host:     env("DB_HOST", "localhost"),
+		Host:     env("DB_HOST", "127.0.0.1"),
 		Port:     env("DB_PORT", "5432"),
-		User:     env("DB_USER", "workshop"),
-		Password: env("DB_PASSWORD", "workshop"),
-		Name:     env("DB_NAME", "workshop"),
+		User:     env("DB_USER", "player"),
+		Password: env("DB_PASSWORD", "p"),
+		Name:     env("DB_NAME", "player"),
 		SSLMode:  env("DB_SSLMODE", "disable"),
 	}
 }
