@@ -13,7 +13,8 @@ Quang Nguyen 90863
 
 ### Agenten
 
-OpenAI Codex
+* Claude Code (Anthropic)
+* OpenAI Codex
 
 ### Chat-URLs, z.B. https://chatgpt.com
 
@@ -60,6 +61,7 @@ Die aktive Go-Anwendung liegt in diesen Ordnern:
 * `cmd/server`: Einstiegspunkt der API
 * `internal/app`: Fiber-Server und Routing
 * `internal/httpapi`: HTTP-Handler und Request-Tests
+* `internal/middleware`: Keycloak-JWT-Pruefung (optionale Absicherung der Player-Routen)
 * `internal/database`: DB-Konfiguration, Verbindung und Migrationen
 * `internal/model`: Datenmodelle
 * `integration`: End-to-End-Test gegen die Testdatenbank
@@ -154,7 +156,12 @@ Wichtige Umgebungsvariablen sind:
 
 ### Optional: OIDC mit Keycloak
 
-Keycloak ist optional und wird in der Go-API nicht verpflichtend erzwungen. Wenn `KEYCLOAK_JWKS_URL` nicht gesetzt ist, laeuft die API ohne Token-Pruefung durch. Die Infrastruktur ist vorbereitet:
+Keycloak ist optional. Die Absicherung wird ueber die Umgebungsvariable `KEYCLOAK_JWKS_URL` gesteuert:
+
+* Ist `KEYCLOAK_JWKS_URL` gesetzt, prueft die Go-API jeden Zugriff auf die `/players`-Routen gegen ein gueltiges Keycloak-JWT (Bearer-Token). Ohne gueltiges Token wird `401 Unauthorized` zurueckgegeben. `GET /health` bleibt immer ohne Token erreichbar.
+* Ist die Variable nicht gesetzt, laeuft die API ohne Token-Pruefung durch.
+
+Im mitgelieferten `docker-compose.yml` ist `KEYCLOAK_JWKS_URL` gesetzt, die Absicherung ist beim Start ueber Docker also aktiv. Die Pruefung ist in `internal/middleware/auth.go` umgesetzt. Die Infrastruktur ist vorbereitet:
 
 * `docker-compose.keycloak.yml`
 * `keycloak/swe-workshop-realm.json`
