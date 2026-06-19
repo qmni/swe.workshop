@@ -1,0 +1,92 @@
+' Copyright (C) 2026 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Komponenten Player
+
+left to right direction
+
+actor RESTClient
+actor GraphQLClient
+
+node "Hono" {
+  [Hono App]
+  [Middleware \nrolesRequired()]
+  [PlayerRouter / Handler]
+  [PlayerWriteRouter / Handler]
+  [Yoga Server]
+  [Resolver / Handler]
+  [PlayerService]
+  [PlayerWriteService]
+  [PrismaClient]
+  [MailService]
+}
+
+cloud {
+    [Prisma]
+}
+
+cloud {
+    [jose \nissuer]
+}
+
+cloud {
+    [nodemailer]
+}
+
+database "DB player" {
+    [Tabelle \nplayer]
+    [Tabelle \nguild]
+}
+
+node {
+    [Keycloak]
+}
+
+node {
+    [Mailserver]
+}
+
+RESTClient ~~> [Hono App]
+[Hono App] ..> [Middleware \nrolesRequired()]
+[MailService] ~[hidden]~> [jose \nissuer]
+[Middleware \nrolesRequired()] ~~> [jose \nissuer]
+[Middleware \nrolesRequired()] ..> [PlayerRouter / Handler]
+[PlayerRouter / Handler] ..> [PlayerService]
+[PlayerWriteRouter / Handler] ..> [PlayerWriteService]
+
+GraphQLClient ~~> [Hono App]
+[Hono App] ..> [Yoga Server]
+[Yoga Server] ..> [Resolver / Handler]
+[Resolver / Handler] ..> [PlayerService]
+[Resolver / Handler] ~~> [jose \nissuer]
+
+[PlayerService] ..> [PrismaClient]
+[PlayerWriteService] ..> [PrismaClient]
+
+[PrismaClient] ~~> [Prisma]
+[Prisma] ~~> [Tabelle \nplayer]
+[Prisma] ~~> [Tabelle \nguild]
+
+[jose \nissuer] ~~> [Keycloak]
+
+[PlayerWriteService] ..> [MailService]
+[MailService] ~~> [nodemailer]
+[nodemailer] ~~> [Mailserver]
+
+footer (c) Jürgen Zimmermann
+
+@enduml
