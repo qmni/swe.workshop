@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -73,12 +74,89 @@ func TestPlayerAPI(t *testing.T) {
 		t.Fatalf("expected 200 OK, got %d", listResp.StatusCode)
 	}
 
-	var players []map[string]any
-	if err := json.NewDecoder(listResp.Body).Decode(&players); err != nil {
+	var playersResp map[string]any
+	if err := json.NewDecoder(listResp.Body).Decode(&playersResp); err != nil {
 		t.Fatalf("decode players: %v", err)
 	}
-	if len(players) != 1 || players[0]["username"] != "testplayer" {
-		t.Fatalf("unexpected players response: %#v", players)
+	itemsAny, ok := playersResp["items"].([]any)
+	if !ok {
+		t.Fatalf("expected items array in players response: %#v", playersResp)
+	}
+	if len(itemsAny) != 1 {
+		t.Fatalf("unexpected items length: %#v", playersResp)
+	}
+	first, ok := itemsAny[0].(map[string]any)
+	if !ok || first["username"] != "testplayer" {
+		t.Fatalf("unexpected players response: %#v", playersResp)
+	}
+	paginationAny, ok := playersResp["pagination"].(map[string]any)
+	if !ok || int(paginationAny["page"].(float64)) != 1 || int(paginationAny["limit"].(float64)) != 20 || int(paginationAny["total"].(float64)) != 1 {
+		t.Fatalf("unexpected pagination response: %#v", playersResp)
+	}
+
+	paginatedResp, err := client.Get("http://localhost:18080/players?page=1&limit=1")
+	if err != nil {
+		t.Fatalf("get paginated players: %v", err)
+	}
+	defer paginatedResp.Body.Close()
+	if paginatedResp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 OK for paginated players, got %d", paginatedResp.StatusCode)
+	}
+
+	var paginatedBody map[string]any
+	if err := json.NewDecoder(paginatedResp.Body).Decode(&paginatedBody); err != nil {
+		t.Fatalf("decode paginated players: %v", err)
+	}
+	itemsAny, ok = paginatedBody["items"].([]any)
+	if !ok || len(itemsAny) != 1 {
+		t.Fatalf("unexpected paginated items: %#v", paginatedBody)
+	}
+
+	filteredResp, err := client.Get("http://localhost:18080/players?playerClass=MAGE")
+	if err != nil {
+		t.Fatalf("get filtered players: %v", err)
+	}
+	defer filteredResp.Body.Close()
+	if filteredResp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 OK for class filter, got %d", filteredResp.StatusCode)
+	}
+
+	var filteredBody map[string]any
+	if err := json.NewDecoder(filteredResp.Body).Decode(&filteredBody); err != nil {
+		t.Fatalf("decode filtered players: %v", err)
+	}
+	itemsAny, ok = filteredBody["items"].([]any)
+	if !ok || len(itemsAny) != 1 {
+		t.Fatalf("unexpected filtered items: %#v", filteredBody)
+	}
+	first, ok = itemsAny[0].(map[string]any)
+	if !ok || first["playerClass"] != "MAGE" {
+		t.Fatalf("unexpected filtered player class: %#v", filteredBody)
+	}
+
+	invalidLimitResp, err := client.Get("http://localhost:18080/players?limit=abc")
+	if err != nil {
+		t.Fatalf("get players with invalid limit: %v", err)
+	}
+	defer invalidLimitResp.Body.Close()
+	if invalidLimitResp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("expected 400 Bad Request for invalid limit, got %d", invalidLimitResp.StatusCode)
+	}
+
+	var invalidLimitBody map[string]any
+	if err := json.NewDecoder(invalidLimitResp.Body).Decode(&invalidLimitBody); err != nil {
+		t.Fatalf("decode invalid limit body: %v", err)
+	}
+	errorObj, ok := invalidLimitBody["error"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected error object for invalid limit response: %#v", invalidLimitBody)
+	}
+	if errorObj["code"] != "VALIDATION_ERROR" {
+		t.Fatalf("expected VALIDATION_ERROR code, got %#v", errorObj)
+	}
+	details, ok := errorObj["details"].([]any)
+	if !ok || len(details) == 0 || !strings.Contains(details[0].(string), "limit") {
+		t.Fatalf("expected validation details for invalid limit, got %#v", invalidLimitBody)
 	}
 
 	updateBody := []byte(`{"username":"updatedplayer","email":"updated@example.com","level":20,"experience":1000,"playerClass":"ROGUE","status":"ACTIVE"}`)

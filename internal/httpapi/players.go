@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -35,17 +36,76 @@ type updatePlayerRequest struct {
 	GuildID     *uint  `json:"guildId" validate:"omitempty,gte=1"`
 }
 
+type listPlayersResponse struct {
+	Items      []model.Player `json:"items"`
+	Pagination paginationMeta `json:"pagination"`
+}
+
+type paginationMeta struct {
+	Page  int   `json:"page"`
+	Limit int   `json:"limit"`
+	Total int64 `json:"total"`
+}
+
+type errorEnvelope struct {
+	Error apiError `json:"error"`
+}
+
+type apiError struct {
+	Code    string   `json:"code"`
+	Message string   `json:"message"`
+	Details []string `json:"details,omitempty"`
+}
+
 func NewPlayerHandler(db *gorm.DB, validate *validator.Validate) PlayerHandler {
 	return PlayerHandler{db: db, validate: validate}
 }
 
 func (h PlayerHandler) List(c *fiber.Ctx) error {
-	var players []model.Player
-	if err := h.db.Order("id asc").Find(&players).Error; err != nil {
+	page, err := parsePositiveIntQuery(c, "page", 1)
+	if err != nil {
+		return respondValidationError(c, []string{err.Error()})
+	}
+
+	limit, err := parsePositiveIntQuery(c, "limit", 20)
+	if err != nil {
+		return respondValidationError(c, []string{err.Error()})
+	}
+	if limit > 100 {
+		return respondValidationError(c, []string{"limit must be <= 100"})
+	}
+
+	playerClass := c.Query("playerClass")
+	if playerClass != "" {
+		if err := h.validate.Var(playerClass, "oneof=WARRIOR MAGE ROGUE PRIEST HUNTER"); err != nil {
+			return respondValidationError(c, []string{"playerClass must be one of WARRIOR, MAGE, ROGUE, PRIEST, HUNTER"})
+		}
+	}
+
+	query := h.db.Model(&model.Player{})
+	if playerClass != "" {
+		query = query.Where("\"playerClass\" = ?", playerClass)
+	}
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, "players could not be loaded")
 	}
 
-	return c.JSON(players)
+	var players []model.Player
+	offset := (page - 1) * limit
+	if err := query.Order("id asc").Offset(offset).Limit(limit).Find(&players).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "players could not be loaded")
+	}
+
+	return c.JSON(listPlayersResponse{
+		Items: players,
+		Pagination: paginationMeta{
+			Page:  page,
+			Limit: limit,
+			Total: total,
+		},
+	})
 }
 
 func (h PlayerHandler) Get(c *fiber.Ctx) error {
@@ -66,10 +126,7 @@ func (h PlayerHandler) Create(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid JSON body")
 	}
 	if err := h.validate.Struct(req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "validation failed",
-			"details": validationErrors(err),
-		})
+		return respondValidationError(c, validationErrors(err))
 	}
 
 	player := model.Player{
@@ -98,10 +155,7 @@ func (h PlayerHandler) Update(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid JSON body")
 	}
 	if err := h.validate.Struct(req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "validation failed",
-			"details": validationErrors(err),
-		})
+		return respondValidationError(c, validationErrors(err))
 	}
 
 	var player model.Player
@@ -166,4 +220,28 @@ func validationErrors(err error) []string {
 		result = append(result, fieldErr.Field()+" failed "+fieldErr.Tag())
 	}
 	return result
+}
+
+func parsePositiveIntQuery(c *fiber.Ctx, key string, fallback int) (int, error) {
+	raw := c.Query(key)
+	if raw == "" {
+		return fallback, nil
+	}
+
+	value, err := strconv.Atoi(raw)
+	if err != nil || value < 1 {
+		return 0, errors.New(key + " must be a positive integer")
+	}
+
+	return value, nil
+}
+
+func respondValidationError(c *fiber.Ctx, details []string) error {
+	return c.Status(fiber.StatusBadRequest).JSON(errorEnvelope{
+		Error: apiError{
+			Code:    "VALIDATION_ERROR",
+			Message: "validation failed",
+			Details: details,
+		},
+	})
 }
