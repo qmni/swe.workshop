@@ -31,6 +31,8 @@ Implementierte Endpunkte:
 * `GET /players`
 * `GET /players/:id`
 * `POST /players`
+* Zusatz: `PUT /players/:id`
+* Zusatz: `DELETE /players/:id`
 
 Beispiel zum Neuanlegen:
 
@@ -126,6 +128,8 @@ Fuer manuelle Tests mit Bruno liegt eine Collection im Ordner `bruno/`.
 3. Player anlegen: `POST /players`
 4. Playerliste lesen: `GET /players`
 5. Validierung testen, indem ein Player ohne Username, mit falscher E-Mail oder ungueltiger `playerClass` gesendet wird
+6. Optional: Player aktualisieren mit `PUT /players/:id`
+7. Optional: Player loeschen mit `DELETE /players/:id`
 
 Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanlegen und Validierungsfehler waren erfolgreich. Der Integrationstest mit Docker wurde ebenfalls erfolgreich ausgefuehrt.
 
