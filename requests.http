@@ -25,3 +25,19 @@ Content-Type: application/json
   "email": "not-an-email",
   "playerClass": "PALADIN"
 }
+
+### Update player 1
+PUT http://localhost:8080/players/1
+Content-Type: application/json
+
+{
+  "username": "updated_testplayer",
+  "email": "updated_testplayer@example.com",
+  "level": 20,
+  "experience": 1000,
+  "playerClass": "ROGUE",
+  "status": "ACTIVE"
+}
+
+### Delete player 1
+DELETE http://localhost:8080/players/1
