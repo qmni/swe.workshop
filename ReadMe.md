@@ -117,6 +117,8 @@ Demo-Requests nach dem Start der Anwendung:
 
 Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt aus einer IDE oder mit einem REST-Client getestet werden kann.
 
+Fuer manuelle Tests mit Bruno liegt eine Collection im Ordner `bruno/`.
+
 ### Demo-Ablauf
 
 1. Anwendung starten: `docker compose up --build`

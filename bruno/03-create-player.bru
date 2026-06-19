@@ -1,0 +1,25 @@
+meta {
+  name: Create player
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/players
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "bruno_player",
+    "email": "bruno_player@example.com",
+    "level": 10,
+    "experience": 500,
+    "playerClass": "MAGE"
+  }
+}

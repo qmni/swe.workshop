@@ -1,0 +1,23 @@
+meta {
+  name: Validation error
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/players
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "",
+    "email": "not-an-email",
+    "playerClass": "PALADIN"
+  }
+}
