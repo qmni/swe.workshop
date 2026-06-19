@@ -249,6 +249,12 @@ Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt au
 
 Fuer manuelle Tests mit Bruno liegt eine Collection im Ordner `bruno/`.
 
+### Schnellstart
+
+1. Anwendung starten: `docker compose up --build`
+2. Health-Check pruefen: `GET /health` auf `http://localhost:8080/health`
+3. Ersten Player anlegen oder die Liste mit `GET /players` pruefen
+
 ### Demo-Ablauf
 
 1. Anwendung starten: `docker compose up --build`
