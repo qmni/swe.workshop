@@ -12,7 +12,7 @@ import (
 	"github.com/qmni/swe.workshop/internal/database"
 )
 
-func TestProductAPI(t *testing.T) {
+func TestPlayerAPI(t *testing.T) {
 	if os.Getenv("RUN_INTEGRATION") != "1" {
 		t.Skip("set RUN_INTEGRATION=1 to run integration tests")
 	}
@@ -30,8 +30,8 @@ func TestProductAPI(t *testing.T) {
 		t.Fatalf("database handle: %v", err)
 	}
 	defer sqlDB.Close()
-	if _, err := sqlDB.Exec(`TRUNCATE products RESTART IDENTITY`); err != nil {
-		t.Fatalf("truncate products: %v", err)
+	if _, err := sqlDB.Exec(`TRUNCATE player, guild RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatalf("truncate player tables: %v", err)
 	}
 
 	srv := app.New(db)
@@ -45,31 +45,31 @@ func TestProductAPI(t *testing.T) {
 	client := http.Client{Timeout: 5 * time.Second}
 	waitForHealth(t, client)
 
-	createBody := []byte(`{"name":"Notebook","description":"Workshop product","priceCents":1299}`)
-	createResp, err := client.Post("http://localhost:18080/products", "application/json", bytes.NewReader(createBody))
+	createBody := []byte(`{"username":"testplayer","email":"testplayer@example.com","level":10,"experience":500,"playerClass":"MAGE"}`)
+	createResp, err := client.Post("http://localhost:18080/players", "application/json", bytes.NewReader(createBody))
 	if err != nil {
-		t.Fatalf("post product: %v", err)
+		t.Fatalf("post player: %v", err)
 	}
 	defer createResp.Body.Close()
 	if createResp.StatusCode != http.StatusCreated {
 		t.Fatalf("expected 201 Created, got %d", createResp.StatusCode)
 	}
 
-	listResp, err := client.Get("http://localhost:18080/products")
+	listResp, err := client.Get("http://localhost:18080/players")
 	if err != nil {
-		t.Fatalf("get products: %v", err)
+		t.Fatalf("get players: %v", err)
 	}
 	defer listResp.Body.Close()
 	if listResp.StatusCode != http.StatusOK {
 		t.Fatalf("expected 200 OK, got %d", listResp.StatusCode)
 	}
 
-	var products []map[string]any
-	if err := json.NewDecoder(listResp.Body).Decode(&products); err != nil {
-		t.Fatalf("decode products: %v", err)
+	var players []map[string]any
+	if err := json.NewDecoder(listResp.Body).Decode(&players); err != nil {
+		t.Fatalf("decode players: %v", err)
 	}
-	if len(products) != 1 || products[0]["name"] != "Notebook" {
-		t.Fatalf("unexpected products response: %#v", products)
+	if len(players) != 1 || players[0]["username"] != "testplayer" {
+		t.Fatalf("unexpected players response: %#v", players)
 	}
 }
 
