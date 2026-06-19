@@ -62,3 +62,56 @@ func TestCreatePlayerRequestValidation(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdatePlayerRequestValidation(t *testing.T) {
+	validate := validator.New()
+
+	tests := []struct {
+		name    string
+		request updatePlayerRequest
+		wantErr bool
+	}{
+		{
+			name: "valid update",
+			request: updatePlayerRequest{
+				Username:    "updatedplayer",
+				Email:       "updated@example.com",
+				Level:       20,
+				Experience:  1000,
+				PlayerClass: "ROGUE",
+				Status:      "ACTIVE",
+			},
+			wantErr: false,
+		},
+		{
+			name: "missing status",
+			request: updatePlayerRequest{
+				Username:    "updatedplayer",
+				Email:       "updated@example.com",
+				Level:       20,
+				PlayerClass: "ROGUE",
+			},
+			wantErr: true,
+		},
+		{
+			name: "invalid status",
+			request: updatePlayerRequest{
+				Username:    "updatedplayer",
+				Email:       "updated@example.com",
+				Level:       20,
+				PlayerClass: "ROGUE",
+				Status:      "LOCKED",
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validate.Struct(tt.request)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("validate.Struct() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
