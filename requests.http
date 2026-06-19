@@ -1,25 +1,27 @@
 ### Health check
 GET http://localhost:8080/health
 
-### List products
-GET http://localhost:8080/products
+### List players
+GET http://localhost:8080/players
 
-### Create valid product
-POST http://localhost:8080/products
+### Create valid player
+POST http://localhost:8080/players
 Content-Type: application/json
 
 {
-  "name": "Notebook",
-  "description": "Workshop product",
-  "priceCents": 1299
+  "username": "testplayer",
+  "email": "testplayer@example.com",
+  "level": 10,
+  "experience": 500,
+  "playerClass": "MAGE"
 }
 
-### Create invalid product to demonstrate validation
-POST http://localhost:8080/products
+### Create invalid player to demonstrate validation
+POST http://localhost:8080/players
 Content-Type: application/json
 
 {
-  "name": "",
-  "description": "Invalid product",
-  "priceCents": 0
+  "username": "",
+  "email": "not-an-email",
+  "playerClass": "PALADIN"
 }

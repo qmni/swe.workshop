@@ -1,0 +1,97 @@
+package httpapi
+
+import (
+	"errors"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v2"
+	"github.com/qmni/swe.workshop/internal/model"
+	"gorm.io/gorm"
+)
+
+type PlayerHandler struct {
+	db       *gorm.DB
+	validate *validator.Validate
+}
+
+type createPlayerRequest struct {
+	Username    string `json:"username" validate:"required,min=3,max=60"`
+	Email       string `json:"email" validate:"required,email,max=120"`
+	Level       int    `json:"level" validate:"omitempty,gte=1,lte=100"`
+	Experience  int    `json:"experience" validate:"omitempty,gte=0"`
+	PlayerClass string `json:"playerClass" validate:"required,oneof=WARRIOR MAGE ROGUE PRIEST HUNTER"`
+	GuildID     *uint  `json:"guildId" validate:"omitempty,gte=1"`
+}
+
+func NewPlayerHandler(db *gorm.DB, validate *validator.Validate) PlayerHandler {
+	return PlayerHandler{db: db, validate: validate}
+}
+
+func (h PlayerHandler) List(c *fiber.Ctx) error {
+	var players []model.Player
+	if err := h.db.Order("id asc").Find(&players).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "players could not be loaded")
+	}
+
+	return c.JSON(players)
+}
+
+func (h PlayerHandler) Get(c *fiber.Ctx) error {
+	var player model.Player
+	if err := h.db.First(&player, c.Params("id")).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return fiber.NewError(fiber.StatusNotFound, "player not found")
+		}
+		return fiber.NewError(fiber.StatusInternalServerError, "player could not be loaded")
+	}
+
+	return c.JSON(player)
+}
+
+func (h PlayerHandler) Create(c *fiber.Ctx) error {
+	var req createPlayerRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "invalid JSON body")
+	}
+	if err := h.validate.Struct(req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "validation failed",
+			"details": validationErrors(err),
+		})
+	}
+
+	player := model.Player{
+		Username:    req.Username,
+		Email:       req.Email,
+		Level:       defaultLevel(req.Level),
+		Experience:  req.Experience,
+		PlayerClass: model.PlayerClass(req.PlayerClass),
+		Status:      model.PlayerStatusActive,
+		GuildID:     req.GuildID,
+	}
+	if err := h.db.Create(&player).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "player could not be created")
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(player)
+}
+
+func defaultLevel(level int) int {
+	if level == 0 {
+		return 1
+	}
+	return level
+}
+
+func validationErrors(err error) []string {
+	var validationErrs validator.ValidationErrors
+	if !errors.As(err, &validationErrs) {
+		return []string{err.Error()}
+	}
+
+	result := make([]string, 0, len(validationErrs))
+	for _, fieldErr := range validationErrs {
+		result = append(result, fieldErr.Field()+" failed "+fieldErr.Tag())
+	}
+	return result
+}
