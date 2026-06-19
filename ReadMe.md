@@ -276,13 +276,13 @@ Der Demo-Ablauf wurde lokal mit Docker ausgefuehrt. Health-Check, Lesen, Neuanle
 
 ## Prompts/Requests an KI-Agent/en
 
-* Check erst kurz das ganze Repo und sag was fuer Abgabe schon passt und was noch fehlt (nur die wichtigen Punkte, keine langen Texte)
-* Setz die Go-API lauffaehig auf mit `GET /health`, `GET /players`, `GET /players/:id`, `POST /players`, `PUT /players/:id`, `DELETE /players/:id`
-* Bau die Player-Validierung sauber ein: `username` Pflicht, `email` gueltig, `playerClass` nur erlaubte Werte, bei Fehler `400` mit klarer Message
-* Nutz PostgreSQL + GORM, Tabellen bei Start anlegen/migrieren, DB-Config ueber Env (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`)
-* Richte Docker + Docker Compose so ein, dass API und DB zusammen mit einem Befehl hochfahren und API auf `localhost:8080` erreichbar ist
-* Mach mindestens einen Integrationstest, der Create + List + Update + Delete einmal durchlaeuft und bei Duplicate auch `409` prueft
-* Wenn du Code aenderst: kurz sagen welche Dateien angepasst wurden und warum, damit wir schnell kontrollieren koennen
-* Nach jedem groesseren Schritt direkt testen (`go test` oder Compose-Testlauf) und Fehler sofort mit kleinem Folgeprompt fixen
-* README knapp und praktisch halten: Start, wichtigste Befehle, Testlauf, Demo-Ablauf, keine unnoetigen Ausschweifungen
-* Wenn mehrere Aufgaben offen sind: priorisieren nach "muss fuer Abgabe heute" und den Rest als optional markieren
+* Repository analysieren: aktueller Stand, fehlende Punkte fuer die Abgabe, klare Prioritaeten
+* Go-API lauffaehig umsetzen mit `GET /health`, `GET /players`, `GET /players/:id`, `POST /players`, `PUT /players/:id`, `DELETE /players/:id`
+* Validierung fuer Player-Requests umsetzen (`username` Pflicht, `email` gueltig, `playerClass` nur erlaubte Werte, Fehlerstatus `400`)
+* PostgreSQL mit GORM anbinden, Tabellen beim Start anlegen/migrieren, Konfiguration ueber Env-Variablen (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`)
+* Docker und Docker Compose so konfigurieren, dass API und DB gemeinsam starten und die API unter `localhost:8080` erreichbar ist
+* Integrationstest fuer zentrale Faelle erstellen: Create, List, Update, Delete, Duplicate mit `409`
+* Nach jeder Code-Aenderung kurz dokumentieren, welche Dateien angepasst wurden und warum
+* Nach jedem groesseren Schritt ausfuehren und pruefen (`go test` oder Compose-Testlauf), Fehler iterativ nachziehen
+* README kompakt halten: Start, wichtigste Befehle, Testlauf, Demo-Ablauf
+* Offene Aufgaben priorisieren in Muss-Punkte fuer die Abgabe und optionale Ergaenzungen
