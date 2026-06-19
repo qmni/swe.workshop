@@ -2,7 +2,8 @@
 
 ## Namen
 
-Hien
+Ngoc Hien Do 94148
+Quang Nguyen 90863
 
 ## Link zum Git-Repository
 
