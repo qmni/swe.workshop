@@ -25,6 +25,12 @@ services:
       DB_NAME: player
       DB_SSLMODE: disable
       PORT: 8080
+      # Optional: Keycloak-JWT-Validierung aktivieren.
+      # host.docker.internal zeigt aus dem Container auf den Host,
+      # wo Keycloak (docker-compose.keycloak.yml) auf Port 8880 laeuft.
+      KEYCLOAK_JWKS_URL: http://host.docker.internal:8880/realms/swe-workshop/protocol/openid-connect/certs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8080:8080"
     depends_on:
