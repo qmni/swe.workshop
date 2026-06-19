@@ -1,0 +1,11 @@
+meta {
+  name: Delete created player
+  type: http
+  seq: 7
+}
+
+delete {
+  url: http://localhost:8080/players/{{playerId}}
+  body: none
+  auth: none
+}

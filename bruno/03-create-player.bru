@@ -16,10 +16,21 @@ headers {
 
 body:json {
   {
-    "username": "bruno_player",
-    "email": "bruno_player@example.com",
+    "username": "{{brunoUsername}}",
+    "email": "{{brunoEmail}}",
     "level": 10,
     "experience": 500,
     "playerClass": "MAGE"
   }
+}
+
+script:pre-request {
+  const suffix = Date.now();
+  bru.setVar('brunoUsername', `bruno_player_${suffix}`);
+  bru.setVar('brunoEmail', `bruno_player_${suffix}@example.com`);
+}
+
+script:post-response {
+  const body = typeof res.body === 'string' ? JSON.parse(res.body) : res.body;
+  bru.setVar('playerId', body.id);
 }
