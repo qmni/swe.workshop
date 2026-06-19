@@ -90,6 +90,25 @@ docker compose up --build
 
 Danach ist die API unter `http://localhost:8080` erreichbar.
 
+Alternativ koennen die haeufigen Befehle ueber das `Makefile` gestartet werden:
+
+```bash
+make test
+make build
+make run
+make integration-test
+```
+
+Zusaetzlich liegen Beispiel-Requests in `requests.http`, damit die API direkt aus einer IDE oder mit einem REST-Client getestet werden kann.
+
+### Demo-Ablauf
+
+1. Anwendung starten: `docker compose up --build`
+2. Health-Check aufrufen: `GET /health`
+3. Produkt anlegen: `POST /products`
+4. Produktliste lesen: `GET /products`
+5. Validierung testen, indem ein Produkt ohne Namen oder mit `priceCents: 0` gesendet wird
+
 ## Prompts/Requests an KI-Agent/en
 
 Initialer Request:
