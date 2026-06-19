@@ -21,6 +21,8 @@ func New(db *gorm.DB) *fiber.App {
 	app.Get("/players", handler.List)
 	app.Get("/players/:id", handler.Get)
 	app.Post("/players", handler.Create)
+	app.Put("/players/:id", handler.Update)
+	app.Delete("/players/:id", handler.Delete)
 
 	return app
 }
